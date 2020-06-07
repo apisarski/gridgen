@@ -15,7 +15,7 @@
 class Manual
 {
     public:
-        Manual(std::string, unsigned int pages=12);
+        Manual(std::string, unsigned int pages=14);
 
         std::vector<std::string> help();
         std::vector<std::string> version();

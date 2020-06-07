@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     10/06/2015
-// Modification: 26/07/2017
+// Modification: 05/06/2020
 ///////////////////////////////////////
 
 #include "num.h"
@@ -12,10 +12,12 @@
 #include <algorithm>
 #include <queue>
 #include <cmath>
+#include <iostream>
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
 #endif
+
 
 ///All below integration methods are based on the closed Newton–Cotes’ formulas
 double num::simpson(const std::vector<double>& v1)
@@ -257,9 +259,37 @@ double num::boole(const std::vector<double>& v1, const std::vector<double>& v2)
     }
 }
 
+double num::avg(const std::vector<double>& v){
 
+    double sum = 0.0;
+    unsigned int v_size = v.size();
+    for(double x: v){
+        sum += x;
+    }
+    sum /= static_cast<double> (v_size);
 
-bool num::IsBTZ (double i) {
+    return sum;
+}
+
+/// variation - gives estimator unbiased if true (1/(n-1)), biased if false (1/n).
+double num::var(const std::vector<double>& v, double avg, bool unbiased){
+
+    double sum = 0.0;
+    unsigned int v_size = v.size();
+    unsigned int n = v_size;
+    if(unbiased){
+        n = n - 1;
+    }
+
+    for(double x: v){
+        sum += pow(x-avg, 2);
+    }
+    sum /= static_cast<double> (n);
+
+    return sum;
+}
+
+bool num::IsPositive (double i) {
     return (i>=0);
 }
 
@@ -329,14 +359,19 @@ std::vector<double> num::minor1(const std::vector<double>& vc, unsigned int p, u
 double num::det(const std::vector<double> vd, unsigned int dim)
 {
     double sum=0.0;
-    if(dim==2)
-    {
-        sum=vd[0]*vd[3]-vd[1]*vd[2];
+    if(dim>1){
+        if(dim==2)
+        {
+            sum=vd[0]*vd[3]-vd[1]*vd[2];
+        }
+        else
+        {
+            for(unsigned int j=0; j<dim; j++)
+                sum+=sign(0,j)*vd[j]*det( minor1(vd, 0, j, dim), dim-1);
+        }
     }
-    else
-    {
-        for(unsigned int j=0; j<dim; j++)
-            sum+=sign(0,j)*vd[j]*det( minor1(vd, 0, j, dim), dim-1);
+    if(dim==1){
+        sum = vd[0];
     }
 
     return sum;
@@ -411,6 +446,7 @@ std::vector<double> num::inverse(const std::vector<double>& im, unsigned int dim
 std::vector<double> num::cholesky(const std::vector<double>& v, unsigned int dim)//&
 {
     std::vector<double> chl(dim*dim, 0.0);
+    bool nan_error = false;
 
     for(unsigned int j=0; j<dim; j++)
     {
@@ -428,7 +464,16 @@ std::vector<double> num::cholesky(const std::vector<double>& v, unsigned int dim
             else
                 chl[ni+j]=(v[ni+j]-s)/chl[nj+j];
 
+            if(std::isnan(chl[ni+j])){
+                nan_error = true;
+            }
+
 		}
+	}
+
+    if(nan_error){
+        std::cerr << "\'Not a number\' error in Cholesky decomposition of Fisher matrix. ";//
+        std::cerr << "For spindown equal " << num::max_spindownDS << " (directed searches) you may change range of initial time -i: <-0.18405, +0.18405>." << std::endl;
 	}
 
 	return chl;
@@ -528,8 +573,8 @@ void num::chop(std::vector<double>& to_chop, double precision)
 
 std::vector<double> num::scb(const std::vector<double>& cathetus)
 {
-    std::vector<double> tsc(2,0.0);   // to store values of sin and cos functions
-    double c=cathetus[0], d=cathetus[1];
+    std::vector<double> tsc(2,0.0);   // to store functions values (sin, cos) - order important
+    double c=cathetus[0], d=cathetus[1];    /// c = 'x' axis, d == 'y' axis, ex.: [c, d] = [alpha1, alpha2]
     if(std::abs(d)<num::epsilon())
     {
         tsc[0]=0.;
@@ -555,7 +600,7 @@ std::vector<double> num::scb(const std::vector<double>& cathetus)
 std::vector<double> num::rotation(const std::vector<double>& w, int axis, int left_or_right, unsigned int dim)
 {
     std::vector<double> b(scb(w));
-    if(left_or_right == -1)//-1 == left, 1 == right
+    if(left_or_right == -1)//-1 == left, 1 == right (clockwise)
         b[0]*=-1;
 
     std::vector<double> tr(diagonal(1.0,dim));
@@ -564,9 +609,9 @@ std::vector<double> num::rotation(const std::vector<double>& w, int axis, int le
     if(axis2<dim && axis>-1)
     {
 
-        tr[axis*(dim+1)]=tr[axis2*(dim+1)]=b[1];
-        tr[axis*(dim+1)+1]=b[0];
-        tr[axis2*(dim+1)-1]=-b[0];
+        tr[axis*(dim+1)]=tr[axis2*(dim+1)]=b[1];    /// cos
+        tr[axis*(dim+1)+1]=b[0];                    /// sin
+        tr[axis2*(dim+1)-1]=-b[0];                  /// -sin
 
         /*
         std::cout << "tr:\n" << std::endl;
@@ -649,24 +694,56 @@ std::vector<double> num::rot(const std::vector<double>& q0, unsigned int dim)
     return r0;
 }
 
+/// Coefficient 'a' - can be used to translate from original space (ellipses)
+/// of sampling frequency vector (Fourier sampling rate; distance between bins
+/// in frequency domain) to space with circles (which have radius equal to one)
+double num::a(double c0){ return 1.0/(2.*sqrt(3.0*(1.0-c0))); }
 
-/// Fourier frequency ('_prim' - at space with hyper-spheres)
-
+/// Fourier sampling rate
 double num::delta_omega_zero(unsigned int nfft, unsigned int data_length)
 {
     return 2.*M_PI*static_cast<double>(data_length)/static_cast<double>(nfft);
 }
 
+/// Fourier sampling rate ('_prim' - at space with hyper-spheres)
 double num::delta_omega_zero_prim(double c0, unsigned int nfft, unsigned int data_length)
 {
     double omega0 = num::delta_omega_zero(nfft, data_length);
-    double omega0_prim = omega0/(2.*sqrt(3.0*(1.0-c0)));
+    double omega0_prim = a(c0) * omega0;
 
     return omega0_prim;
 }
 
-/// Sphere coverings:
+/// For grid s2:
+/// k = 1 - length of Fourier transform 'nfft' with zero padding,
+/// k = 2 - pure Fourier transform,
+/// k = 4 - Fourier transform for folding data by factor 2
+///         (Fourier transform is two times shorter than in pure FT case (k = 2)).
+unsigned int num::k(unsigned int nfft, unsigned int data_length) /// k = 1, 2, 4, 8, ...
+{
+    double k = 2 * static_cast<double> (data_length) / static_cast<double> (nfft);/// == delta_omega_zero(nfft, data_length) / M_PI = k = 2^m
+    if(k - floor(k) > num::epsilon()){
+        std::vector<int> powersOfTwo = {1, 2, 4, 8, 16, 32, 64, 128};
+        std::vector<int>::const_iterator c_it = std::find(powersOfTwo.begin(), powersOfTwo.end(), k);
+        if(c_it != powersOfTwo.end() ){
+            return k;
+        }
+        else{
+            std::string error = "Grid s2: Length of the data divided by length of Fourier transform have to be equal to 2^m (power-of-two), "
+                            "where: m = 0, 1, 2, 3, ... (0 -> zero padding, 1 -> pure FT, 2 -> data folding).";
+            //"Grid s2: Length of the data need to be less than length of Fourier transform (or equal to pure (without zero padding) FT)."
+            throw std::domain_error(error);
+        }
+    }
+    else{
+        std::string error = "Need to be fulfilled condition: 2 * data_length / nfft == k = 2^m, where: m = 0, 1, 2, 3, ... (0 -> zero padding, 1 -> pure FT, 2 -> data folding).";
+            //"Grid s2: Length of the data need to be less than length of Fourier transform (or equal to pure (without zero padding) FT)."
+        throw std::domain_error(error);
+    }
+}
 
+/// Sphere coverings:
+/// Gram matrix needed to generate grid A*_{n}; n == dim.
 std::vector<double> num::gram(unsigned int dim)
 {
     std::vector<double> mr;
@@ -695,14 +772,15 @@ std::vector<double> num::gram(unsigned int dim)
 
 std::vector<double> num::a_star(unsigned int dim)
 {
-    std::vector<double> aNstar(cholesky(gram(dim), dim));
+    std::vector<double> aNstar(num::cholesky(gram(dim), dim));/// !!!!
 
 	return aNstar;
 }
 
+/// Grid A*_{n} with sphere covering radius equal to 1.
 std::vector<double> num::a_star_r1(unsigned int dim)
 {
-    double rescale = 1.0/covering_radius(dim);
+    double rescale = 1.0/covering_radius_a_star(dim);
     std::vector<double> aNstarR1(multiply_A(a_star(dim), rescale));
 
     ///below step is not quite necessary but in some cases
@@ -723,16 +801,18 @@ double num::sphere_volume(unsigned int dim, double radius){
     return dpow/dgamma;
 }
 
-double num::covering_radius(unsigned int dim){
+/// Sphere covering radius for a_star(unsigned int)" grid
+double num::covering_radius_a_star(unsigned int dim){
     double d1=sqrt(dim*(dim+2.0));
     double d2=2.0*sqrt(3.0);
 
     return d1/d2;
 }
 
-double num::thickness(const std::vector<double>& astar, double radius, unsigned int dim){
+/// Density of covering for hyper-sphere space
+double num::thickness(const std::vector<double>& base_prim, double radius, unsigned int dim){
     double sv = sphere_volume(dim, radius);
-    double ddet = num::det(astar, dim);
+    double ddet = num::det(base_prim, dim);
 
     return sv/fabs(ddet);
 }

@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     20/05/2015
-// Last Modification: 10/01/2018 A.Pisarski
+// Last Modification: 11/04/2020 A.Pisarski
 ///////////////////////////////////////
 
 #include "ReadConfig.h"
@@ -34,11 +34,13 @@ const std::vector<std::string> ReadConfig::m_options{
     "SaveDensityOfCovering=",
     "Chop=",                                // 21
     "ChooseMethod=",
+    "TypeSearch=",                          /// 23 v0.3.01
     "DataS2Use=",
     "DataS2SaveBest=",
-    "Convert=",                             // 25
+    "Convert=",                             // 26
+    "ObserveTimeSymmetric=",                /// 27 v0.3.01
     "Quiet=",
-    "SayHello="                             // 27
+    "SayHello="                             // 29 [0, 30)
 };
 
 ReadConfig::ReadConfig(): m_values(read_config_file())
@@ -119,7 +121,7 @@ std::vector<OptionValue> ReadConfig::set_command(const std::vector<std::string>&
 {
     typedef std::string::const_iterator iter;
     std::vector<OptionValue> tempV;
-    tempV.resize(28);
+    tempV.resize(m_options.size());
 
     unsigned int k;
     for(unsigned int line=0; line<config_lines.size(); line++)
@@ -197,8 +199,8 @@ std::vector<OptionValue> ReadConfig::set_command(const std::vector<std::string>&
     if(tempV[9].m_i <= 0)
         tempV[9].m_i = 20;              // NRadius
 
-    if(tempV[10].m_i <= 0 || tempV[10].m_i>2)
-        tempV[10].m_i = 1;              // Spindown
+///    if(tempV[10].m_i <= 0 || tempV[10].m_i>2)
+///        tempV[10].m_i = 1;              // Spindown, see lines: 242 - 249
 
     for(int i=11; i<14; i++)            // Source files
         if(tempV[i].m_s.size() == 0)
@@ -232,15 +234,28 @@ std::vector<OptionValue> ReadConfig::set_command(const std::vector<std::string>&
     if(tempV[22].m_s != "s1" && tempV[22].m_s != "s2"
        && tempV[22].m_s != "Automatic") // Choose algorithm to obtain grid or Fisher matrix or density
         tempV[22].m_s = "Automatic";
+    //TypeSearch=
+    if(tempV[23].m_s != "All-Sky" && tempV[23].m_s != "AllSky"
+       && tempV[23].m_s != "Directed") // Choose type of search
+        tempV[23].m_s = "All-Sky";
 
-    for(int i=23; i<26; i++)            // (23) DataS2Use, (24) DataS2SaveBest
+    if(tempV[23].m_s == "All-Sky"){
+        if(tempV[10].m_i <= 0 || tempV[10].m_i>2)
+            tempV[10].m_i = 1;              // Spindown
+    }
+    if(tempV[23].m_s == "Directed"){
+        if(tempV[10].m_i <= 0 || tempV[10].m_i>3)
+            tempV[10].m_i = 1;              // Spindown
+    }
+
+    for(int i=24; i<27; i++)            // (24) DataS2Use, (25) DataS2SaveBest,(26) Convert
         if(tempV[i].m_s != "True" && tempV[i].m_s != "False")
             tempV[i].m_s = "True";
 
-    if(tempV[25].m_s != "True" && tempV[25].m_s != "False") // (25) Convert
-        tempV[25].m_s = "True";
+    if(tempV[27].m_s != "True" && tempV[27].m_s != "False") // (27) ObserveTimeSymmetric (False == [0, To], True == [-To/2, To/2])
+        tempV[27].m_s = "True";
 
-    for(int i=26; i<28; i++)            // (26) "Quiet=", (27) "SayHello="
+    for(int i=28; i<30; i++)            // (26) "Quiet=", (27) "SayHello="
         if(tempV[i].m_s != "True" && tempV[26].m_s != "False") // , (27) Future option, not implement yet
             tempV[i].m_s = "False";
 /*

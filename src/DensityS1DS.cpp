@@ -1,5 +1,5 @@
 ///////////////////////////////////////
-// Name:        DensityS1.cpp
+// Name:        DensityS1DS.cpp
 // Author:      Andrzej Pisarski
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
@@ -7,7 +7,7 @@
 // Modification:07/09/2017 A.P.
 ///////////////////////////////////////
 
-#include "DensityS1.h" //
+#include "DensityS1DS.h" //
 #include "Node.h"
 #include "num.h"
 #include <string>
@@ -19,12 +19,15 @@
 #define M_PI           3.14159265358979323846
 #endif
 
-DensityS1::DensityS1(unsigned int spindown_): m_spindown(spindown_)
+
+#include <iostream>
+
+DensityS1DS::DensityS1DS(unsigned int spindown_): m_spindown(spindown_)
 {
     m_dim = sd2dim(spindown_); //ctor
 }
 
-std::vector<double> DensityS1::grid_prim(double c0, unsigned int nfft, unsigned int data_length) const
+std::vector<double> DensityS1DS::grid_prim(double c0, unsigned int nfft, unsigned int data_length) const
 {
     if(data_length<=0)
     {
@@ -78,6 +81,80 @@ std::vector<double> DensityS1::grid_prim(double c0, unsigned int nfft, unsigned 
             case 1:
             for(int i=0; i<=hd; i++){
                 for(int j=0; j<=hd; j++){
+                    if( i==1 || j==1)
+                    {
+                        std::vector<double> vi(m_dim*m_dim, 0.0);
+                        for(unsigned int q=0; q<m_dim; q++)
+                        {
+                            vi[q]=i*an_star[q];
+                            vi[m_dim*1+q]=j*an_star[m_dim*1+q];
+                            /// test:
+                            //std::cout << "vi[q]= " << vi[q] << ", vi[m_dim*1+q]= " << vi[m_dim*1+q] << std::endl;
+                        }
+
+                        std::vector<double> vitemp(m_dim,0.0);
+                        for(unsigned int p=0; p<m_dim; p++)
+                            for(unsigned int q=0; q<m_dim; q++)
+                                vitemp[p]+=vi[m_dim*q+p];
+
+                        double dtemp=num::length(vitemp);
+                        if( dtemp >= dwp )//= dwp
+                        {
+                            std::vector<int> vtemp(m_dim,0);//={i,j,k,l};
+                            vtemp[0]=i;
+                            vtemp[1]=j;
+
+                            Node vtp=Node(dtemp-dwp, vtemp);
+                            ///vi_temp.push_back(vtp);///->(*)
+                            if(vtp.m_distance<vtp_temp.m_distance)
+                                vtp_temp = vtp;
+                        }
+                    }
+                }
+            }
+            break;
+
+            case 2:
+            for(int i=0; i<=hd; i++){
+                for(int j=0; j<=hd; j++){
+                    for(int k=0; k<=hd; k++){
+                            if( i==1 || j==1 || k==1)
+                            {
+                                std::vector<double> vi(m_dim*m_dim, 0.0);
+                                for(unsigned int q=0; q<m_dim; q++)
+                                {
+                                    vi[q]=i*an_star[q];
+                                    vi[m_dim*1+q]=j*an_star[m_dim*1+q];
+                                    vi[m_dim*2+q]=k*an_star[m_dim*2+q];
+                                }
+
+                                std::vector<double> vitemp(m_dim,0.0);
+                                for(unsigned int p=0; p<m_dim; p++)
+                                    for(unsigned int q=0; q<m_dim; q++)
+                                        vitemp[p]+=vi[m_dim*q+p];
+
+                                double dtemp=num::length(vitemp);
+                                if( dtemp >= dwp )//= dwp
+                                {
+                                    std::vector<int> vtemp(m_dim,0);//={i,j,k,l};
+                                    vtemp[0]=i;
+                                    vtemp[1]=j;
+                                    vtemp[2]=k;
+
+                                    Node vtp=Node(dtemp-dwp, vtemp);
+                                    ///vi_temp.push_back(vtp);///->(*)
+                                    if(vtp.m_distance<vtp_temp.m_distance)
+                                        vtp_temp = vtp;
+                                }
+                            }
+                    }
+                }
+            }
+            break;
+
+            case 3:
+            for(int i=0; i<=hd; i++){
+                for(int j=0; j<=hd; j++){
                     for(int k=0; k<=hd; k++){
                         for(int l=0; l<=hd; l++)
                         {
@@ -118,7 +195,7 @@ std::vector<double> DensityS1::grid_prim(double c0, unsigned int nfft, unsigned 
             }
             break;
 
-            case 2:
+            case 4:
             for(int i=0; i<=hd; i++){
                 for(int j=0; j<=hd; j++){
                     for(int k=0; k<=hd; k++){
@@ -172,12 +249,23 @@ std::vector<double> DensityS1::grid_prim(double c0, unsigned int nfft, unsigned 
         ///wek=vi_temp[0].get_coef();
         wek=vtp_temp.get_coef();
         ///
+
         /*
+        /// test:
         for(unsigned int i=0; i<wek.size(); i++)
             std::cout<< "wek[" << i << "]=" << wek[i] << " ";
 
-        std::cout<< std::endl;
+        std::cout<< "\n A*: " << std::endl;
+
+        for(unsigned int p=0; p<m_dim; p++){
+            for(unsigned int q=0; q<m_dim; q++){
+                std::cout << an_star[m_dim*p+q] << ", ";//vi[m_dim*p+q];
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
         */
+
         ///
         std::vector<double> vi(m_dim*m_dim, 0.0);
         for(unsigned int p=0; p<m_dim; p++)
@@ -204,10 +292,63 @@ std::vector<double> DensityS1::grid_prim(double c0, unsigned int nfft, unsigned 
                     q0.push_back(an_star[m_dim*i+j]);
             }
 
+        /*
+		/// test:
+        std::cout<< "\n q0 before rot(): " << std::endl;
 
+        for(unsigned int p=0; p<m_dim; p++){
+            for(unsigned int q=0; q<m_dim; q++){
+                std::cout << an_star[m_dim*p+q] << ", ";//vi[m_dim*p+q];
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+		//
+		*/
         q0=num::rot(q0, m_dim);
+
+        /*
+        /// test:
+		std::cout<< "\n q0 after rot(): " << std::endl;
+        for(unsigned int p=0; p<m_dim; p++){
+            for(unsigned int q=0; q<m_dim; q++){
+                std::cout << an_star[m_dim*p+q] << ", ";//vi[m_dim*p+q];
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+		//
+
+
+		// test:
+		std::vector<double> temp11 = num::diagonal(dwp/dlqq, m_dim);
+        std::cout<< "\n diagonal(dwp/dlqq, m_dim): " << std::endl;
+        for(unsigned int p=0; p<m_dim; p++){
+            for(unsigned int q=0; q<m_dim; q++){
+                std::cout << temp11[m_dim*p+q] << ", ";//vi[m_dim*p+q];
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "m_dim= " << m_dim << std::endl;
+        //
+        */
+
         q0=num::multiply_AB(q0, num::diagonal(dwp/dlqq, m_dim), m_dim, m_dim, m_dim);
+
+        /*
+        // test:
+        std::cout<< "\n q0 after multiply: " << std::endl;
+        for(unsigned int p=0; p<m_dim; p++){
+            for(unsigned int q=0; q<m_dim; q++){
+                std::cout << q0[m_dim*p+q] << ", ";//vi[m_dim*p+q];
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+        //
+        */
     }
+
     else{
         std::string error="Length of Fourier transform need to be equal\n"
         "or longer than  data length.\n";
@@ -217,44 +358,48 @@ std::vector<double> DensityS1::grid_prim(double c0, unsigned int nfft, unsigned 
     return q0;
 }
 
-double DensityS1::density(const std::vector<double>& basis) const
+double DensityS1DS::density(const std::vector<double>& basis) const
 {
     return num::thickness(basis, 1.0, m_dim);
     ///return std::abs( pow(M_PI, 2.0)/( 2.0*num::det(basis, m_dim ) ) ); //M_PI -std=c99 acos (-1.0)
 }
 
-double DensityS1::density(double c0,  unsigned int nfft, unsigned int data_length) const
+double DensityS1DS::density(double c0,  unsigned int nfft, unsigned int data_length) const
 {
     std::vector<double> q0(grid_prim(c0, nfft, data_length));// 2^19 = 524288
     return density(q0);
 }
 
-// Convert spindown to dimension (all-sky searches)
-unsigned int DensityS1::sd2dim(unsigned int spindown) const
+// Convert spindown to dimension (directed searches)
+unsigned int DensityS1DS::sd2dim(unsigned int spindown) const
 {
-    if(spindown > 0 && spindown < 3)
+    if(spindown > 0 && spindown <= num::max_spindownDS)
     {
-        return spindown + 3;
+        return spindown + 1;
     }
     else{
         //std::cerr << "spindown=" << spindown << std::endl;
-        std::string error="Allowed spindown values: {1, 2}. \n";
+        std::string error="Allowed spindown values: <1, " + std::to_string(num::max_spindownDS) + ">. \n";
         throw std::domain_error(error);
     }
 
 }
+
 
 /// Auxiliary function (not used in the program):
-// Convert dimension to spindown  (all-sky searches)
-unsigned int DensityS1::dim2sd(unsigned int dimension) const
+// Convert dimension to spindown  (directed searches)
+unsigned int DensityS1DS::dim2sd(unsigned int dimension) const
 {
-    if(dimension > 3 && dimension < 6) // dimension = 4, 5
+    if(dimension > 0 && dimension <= num::max_spindownDS - 1)
     {
-        return dimension - 3;
+        return dimension - 1;
     }
     else{
-        std::string error="Allowed dimensions values of matrix An* : {4, 5}.\n";
+        std::string error="Allowed dimensions values of matrix An* : <1,";
+        std::string maxsd4DS=std::to_string(num::max_spindownDS-1);
+        error+=">.\n";
         throw std::domain_error(error);
     }
 
 }
+

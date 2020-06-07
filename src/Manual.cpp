@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     15/11/2015
-// Last Modification: 10/01/2018 A.Pisarski
+// Modification: 08/06/2020 A.Pisarski
 ///////////////////////////////////////
 
 #include "Manual.h"
@@ -68,7 +68,7 @@ void Manual::print_help()
                 }
             }
         }
-	
+
 	char sign = getchar();
         if(sign=='u'){
             if(current_page>1)
@@ -111,12 +111,12 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t      [-i|--initial <min> <max> <step>] [-a|--algorithm <type>] [-n|--nfft <int>]\n");
     text_of_help.push_back("\t      [-nd|--ndata <int>] [-na|-nalpha <int>] [-nr|--nradius <int>]\n");
     text_of_help.push_back("\t      [-cv|--convert <bool>] [-ch|--chop <bool>] [-p|--print <string>]\n");
-    text_of_help.push_back("\t      [-f|--factor <bool>]\n");
+    text_of_help.push_back("\t      [-t|--type <type>] [-u|--unbiased <bool>]\n");
     text_of_help.push_back("\n");   //To sign empty line
     text_of_help.push_back("\t ./gg [-h|--help] [-ht|--helptxt] [-v|--version] [-aa|--author]\n");
     text_of_help.push_back("\n");
     text_of_help.push_back("DESCRIPTION\n");
-    text_of_help.push_back("\t GridsGenerator (GG) is designated to be used in all-sky narrow-band\n");
+    text_of_help.push_back("\t GridsGenerator (GG) is designated to be used in all-sky narrow-band and directed\n");
     text_of_help.push_back("\t searches of continuous gravitational waves. Program allow to:\n");
     text_of_help.push_back("\t - generate efficient grid(s) for chosen initial time of observation (1).\n");
     text_of_help.push_back("\t - generate reduced Fisher matrix for chosen initial time of observation (1),\n");
@@ -128,6 +128,68 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\n");
     text_of_help.push_back("FLAGS\n");
     text_of_help.push_back("   Flags with (optional) argument(s):\n");
+    text_of_help.push_back("\t -a or --algorithm <type>\n");
+    text_of_help.push_back("\t\t Algorithm type to choose.\n");
+    text_of_help.push_back("\t\t <type> take option: s1, s2, a.\n");
+    text_of_help.push_back("\t\t -- All-Sky searches algorithms: --\n");
+    text_of_help.push_back("\t\t s1 - based on analytic formula (for spindowns: 1, 2),\n");
+    text_of_help.push_back("\t\t s2 - partially numeric formula (only for spindown 1).\n");
+    text_of_help.push_back("\t\t Accuracy for algorithm 's2' depended on -na (--nalpha) and -nr (--nradius)\n");
+    text_of_help.push_back("\t\t flags.\n");
+    text_of_help.push_back("\t\t -- Directed searches algorithms: --\n");
+    text_of_help.push_back("\t\t s1 - based on analytic formula (for spindowns: 1, 2, 3),\n");
+    text_of_help.push_back("\t\t s2 - based on fully analytic formula (only for spindown 1).\n");
+    text_of_help.push_back("\t\t a - automatically choose algorithm 's1' or 's2'. Use this argument to allow\n");
+    text_of_help.push_back("\t\t GridsGenerator to decide which algorithm (for given parameters) should be\n");
+    text_of_help.push_back("\t\t used to get grid with better density of covering.\n");
+    text_of_help.push_back("\t\t Information about implemented algorithms can be found in article:\n");
+    text_of_help.push_back("\t\t http://dx.doi.org/10.1088/0264-9381/32/14/145014\n");
+    text_of_help.push_back("\t\t Default set: a.\n");
+    text_of_help.push_back("\n");
+    text_of_help.push_back("\t   >>> Options for All-Sky searches only <<<\n");
+    text_of_help.push_back("\t -d or --directory <path>\n");
+    text_of_help.push_back("\t\t Directory containing ephemeris (need to contain binary files:\n");
+    text_of_help.push_back("\t\t 'rSSB.bin', 'rDet.bin', 'rDetSSB.bin').\n");
+    text_of_help.push_back("\t\t <path> - take path to directory.\n");
+    text_of_help.push_back("\t\t E.g. -d 001/: directory '001/' located inside folder with GridsGenerator.\n");
+    text_of_help.push_back("\t\t If directory is not provided, program will try to find ephemeris\n");
+    text_of_help.push_back("\t\t in directory with GridsGenerator.\n");
+    text_of_help.push_back("\t\t To get this same effect you can also apply second form:\n");
+    text_of_help.push_back("\t\t -d <path> <SegmentNo> <detectorX>. In this form\n");
+    text_of_help.push_back("\t\t you should to provide only one folder -- name of detector.\n");
+    text_of_help.push_back("\t\t To get result for more than one detector (with applying\n");
+    text_of_help.push_back("\t\t sum of reduced fisher matrices):\n");
+    text_of_help.push_back("\t\t -d <path> <SegmentNo> <detectorX> ... <detectorZ> <band>\n");
+    text_of_help.push_back("\t\t Provide at least two or more detectors.");
+    text_of_help.push_back("\t\t E.g. -d /home/ligo/ 001 H1 L1 0371; -d /home/ligo/ 001 H1 L1 V1 0371.\n");
+    text_of_help.push_back("\t\t To read data from file different than default 'xdatc', provide appropriate\n");
+    text_of_help.push_back("\t\t name of the file on the last position:\n");
+    text_of_help.push_back("\t\t -d /home/ligo/ 001 H1 L1 0371 xdatsc_001_0067.bin\n");
+    text_of_help.push_back("\t\t or more simpler form:\n");
+    text_of_help.push_back("\t\t -d /home/ligo/ 001 H1 L1 0371 xdatsc\n");
+    text_of_help.push_back("\t\t Data file name need to have prefix 'xdatas'.\n");
+    text_of_help.push_back("\t\t Accepted detectors names: H1, L1, V1.\n");
+    text_of_help.push_back("\t\t Sum of Fisher matrices is obtain with applying unbiased estimator of variation.\n");
+    text_of_help.push_back("\t\t To change for biased version type: -u f, f - false, t - true (default set).\n");
+    text_of_help.push_back("\n");
+    text_of_help.push_back("\t -na or --nalpha <int>\n");
+    text_of_help.push_back("\t\t Number of loops (incrementation deep) in root finding algorithm.\n");
+    text_of_help.push_back("\t\t <int> take positive integer number without zero.\n");
+    text_of_help.push_back("\t\t This flag affect only on 's2' algorithm.\n");
+    text_of_help.push_back("\t\t Default set: 35.\n");
+    text_of_help.push_back("\n");
+    text_of_help.push_back("\t -nr or --nradius <int>\n");
+    text_of_help.push_back("\t\t Number of loops in covering radius (deep hole) finding algorithm.\n");
+    text_of_help.push_back("\t\t <int> take positive integer number without zero.\n");
+    text_of_help.push_back("\t\t This flag affect only on 's2' algorithm.\n");
+    text_of_help.push_back("\t\t Default set: 20.\n");
+    text_of_help.push_back("\n");
+    text_of_help.push_back("\t -u or --unbiased <bool>\n");
+    text_of_help.push_back("\t\t Wariance estimator can be unbiased (true), or biased (false).\n");
+    text_of_help.push_back("\t\t <bool> take argument: t (true), f (false).\n");
+    text_of_help.push_back("\t\t Default set: t.\n");
+    text_of_help.push_back("\n");
+    text_of_help.push_back("\t   >>> Options for both All-Sky and Directed searches <<<\n");
     text_of_help.push_back("\t -c or --covariance <min> <max> <step>\n");
     text_of_help.push_back("\t\t Covariance. Flag -c is required (even without argument) to get result.\n");
     text_of_help.push_back("\t\t <min> - minimum value of covariance but not less than 0;\n");
@@ -152,42 +214,21 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t ## If flags -c (--covariance) and -m (--match) provided simultaneously,\n");
     text_of_help.push_back("\t\t ## program will read options from -c flag only.\n");
     text_of_help.push_back("\n");
-    //text_of_help.push_back("\n");
-    text_of_help.push_back("\t -d or --directory <path>\n");
-    text_of_help.push_back("\t\t Directory containing ephemeris (need to contain binary files:\n");
-    text_of_help.push_back("\t\t 'rSSB.bin', 'rDet.bin', 'rDetSSB.bin').\n");
-    text_of_help.push_back("\t\t <path> - take path to directory.\n");
-    text_of_help.push_back("\t\t E.g. -d 001/: directory '001/' located inside folder with GridsGenerator.\n");
-    text_of_help.push_back("\t\t If directory is not provided, program will try to find ephemeris\n");
-    text_of_help.push_back("\t\t in directory with GridsGenerator.\n");
-    text_of_help.push_back("\n");
-    // text_of_help.push_back("\t -f or --factor <bool>\n");
-    // text_of_help.push_back("\t\t Scale factor of ephemeris (if set on t (true) ephemeris will be\n");
-    // text_of_help.push_back("\t\t multiplied by 1000/length_of_ephemeris).\n");
-    // text_of_help.push_back("\t\t <bool> take argument: t (true), f (false).\n");
-    // text_of_help.push_back("\t\t Default set: f.\n");;
-    // text_of_help.push_back("\n");
     text_of_help.push_back("\t -i or --initial <min> <max> <step>\n");
-    text_of_help.push_back("\t\t Initial time of observation.\n");
+    text_of_help.push_back("\t\t Initial time (for equations where ti: <-1/2 To, 1/2 To>. To - observation time).\n");
     text_of_help.push_back("\t\t <min> - minimum value of initial time;\n");
     text_of_help.push_back("\t\t default set: 0.5.\n");
     text_of_help.push_back("\t\t <max> - optional maximum value of initial time.\n");
-    text_of_help.push_back("\t\t <step> - optional step value of minimal match;\n");
+    text_of_help.push_back("\t\t <step> - optional step value of initial time;\n");
     text_of_help.push_back("\t\t if not provided step will be set on step = max - min.\n");
     text_of_help.push_back("\n");
-    text_of_help.push_back("\t -a or --algorithm <type>\n");
-    text_of_help.push_back("\t\t Algorithm type to choose.\n");
-    text_of_help.push_back("\t\t <type> take option: s1, s2, a. Algorithms:\n");
-    text_of_help.push_back("\t\t s1 - based on fully analytic formula,\n");
-    text_of_help.push_back("\t\t s2 - partially numeric formula.\n");
-    text_of_help.push_back("\t\t Accuracy for algorithm 's2' depended on -na (--nalpha) and -nr (--nradius)\n");
-    text_of_help.push_back("\t\t flags.\n");
-    text_of_help.push_back("\t\t a - automatically choose algorithm 's1' or 's2'. Use this argument to allow\n");
-    text_of_help.push_back("\t\t GridsGenerator to decide which algorithm (for given parameters) should be\n");
-    text_of_help.push_back("\t\t used to get grid with better density of covering.\n");
-    text_of_help.push_back("\t\t Information about implemented algorithms can be found in article:\n");
-    text_of_help.push_back("\t\t http://dx.doi.org/10.1088/0264-9381/32/14/145014\n");
-    text_of_help.push_back("\t\t Default set: a.\n");
+    text_of_help.push_back("\t -I or --Initial <min> <max> <step>\n");
+    text_of_help.push_back("\t\t Initial time (for equations where ti: <0, To>. To - observation time).\n");
+    text_of_help.push_back("\t\t <min> - minimum value of initial time;\n");
+    text_of_help.push_back("\t\t default set: 0 (see default set for flag -i).\n");
+    text_of_help.push_back("\t\t <max> - optional maximum value of initial time.\n");
+    text_of_help.push_back("\t\t <step> - optional step value of initial time;\n");
+    text_of_help.push_back("\t\t if not provided step will be set on step = max - min.\n");
     text_of_help.push_back("\n");
     text_of_help.push_back("\t -n or --nfft <int>\n");
     text_of_help.push_back("\t\t Number of Fourier bins.\n");
@@ -202,6 +243,7 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t of ephemeris).\n");
     text_of_help.push_back("\t\t <int> take positive integer number including zero.\n");
     text_of_help.push_back("\t\t If <int> is set to zero data length will be read from ephemeris*.\n");
+    text_of_help.push_back("\t\t (for All-Sky searches; for Directed searches data length will be set to 344656).\n");
     text_of_help.push_back("\t\t If <int> is bigger than zero program will able to obtain density of\n");
     text_of_help.push_back("\t\t covering only**.\n");
     text_of_help.push_back("\t\t Default set: 0.\n");
@@ -233,18 +275,6 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t be obtained fast but in approximated way (generally speaking more \n");
     text_of_help.push_back("\t\t collected data allows to get more accurate results).\n");
     text_of_help.push_back("\n");
-    text_of_help.push_back("\t -na or --nalpha <int>\n");
-    text_of_help.push_back("\t\t Number of loops (incrementation deep) in root finding algorithm.\n");
-    text_of_help.push_back("\t\t <int> take positive integer number without zero.\n");
-    text_of_help.push_back("\t\t This flag affect only on 's2' algorithm.\n");
-    text_of_help.push_back("\t\t Default set: 35.\n");
-    text_of_help.push_back("\n");
-    text_of_help.push_back("\t -nr or --nradius <int>\n");
-    text_of_help.push_back("\t\t Number of loops in covering radius (deep hole) finding algorithm.\n");
-    text_of_help.push_back("\t\t <int> take positive integer number without zero.\n");
-    text_of_help.push_back("\t\t This flag affect only on 's2' algorithm.\n");
-    text_of_help.push_back("\t\t Default set: 20.\n");
-    text_of_help.push_back("\n");
     text_of_help.push_back("\t -cv or --convert <bool>\n");
     text_of_help.push_back("\t\t Convert grid from space with hyper-sphere to hyper-ellipsoid space.\n");
     text_of_help.push_back("\t\t <bool> take argument: t (true), f (false).\n");
@@ -263,12 +293,11 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t d - density of covering,\n");
     text_of_help.push_back("\t\t f - Fisher reduced matrix,\n");
     text_of_help.push_back("\t\t g - grid.\n");
-    text_of_help.push_back("\t\t o - print in original (author) mode (without that option program,\n");
-    text_of_help.push_back("\t\t will work with Michal Bejger's sets (result saved to the 'grid.bin',\n");
-    text_of_help.push_back("\t\t file)); ao - this same as: dfgo. Default set: g.\n");
+    text_of_help.push_back("\t\t if any option provided, program will work with Michal Bejger's sets\n");
+    text_of_help.push_back("\t\t (result saved to the 'grid.bin' file); a - this same as: dfg. Default set: g.\n");
     text_of_help.push_back("\t\t Option can be joined (order is not important), e.g. df, dg, fg, dfg.\n");
     text_of_help.push_back("\t\t #### If argument of flag -nd is set to be bigger than zero, flag -p\n");
-    text_of_help.push_back("\t\t #### can accept only 'd' argument.\n");
+    text_of_help.push_back("\t\t #### can accept only 'd' argument (All-Sky).\n");
     text_of_help.push_back("\t -s or --spindown <int>\n");
     text_of_help.push_back("\t\t Number of spindowns to use.\n");
     text_of_help.push_back("\t\t <int> accept values: 1 or 2.\n");
@@ -276,7 +305,13 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t (regardless to option used with flag '-a').\n");
     text_of_help.push_back("\t\t Default set: 1.\n");
     text_of_help.push_back("\n");
-    text_of_help.push_back("   Flags with no arguments:\n");
+    text_of_help.push_back("\t -t or --type <type>\n");
+    text_of_help.push_back("\t\t type of searches to choose.\n");
+    text_of_help.push_back("\t\t <type> take option: a, d.\n");
+    text_of_help.push_back("\t\t a - all sky, d - directed.\n");
+    text_of_help.push_back("\t\t Default set: a.\n");
+    text_of_help.push_back("\n");
+    text_of_help.push_back("   >>> Flags with no arguments: <<<\n");
     text_of_help.push_back("\t -h or --help\n");
     text_of_help.push_back("\t\t Display this help.\n");
     text_of_help.push_back("\n");
@@ -372,10 +407,29 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t # That clue apply to both: covariance (-c)/minimal match (-m) and\n");
     text_of_help.push_back("\t\t # initial time (-i).\n");
     text_of_help.push_back("\n");
+    text_of_help.push_back("\t\t To get result for more than one detector (with applying\n");
+    text_of_help.push_back("\t\t sum of reduced fisher matrices):\n");
+    text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067\n");
+    text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 V1 0067.\n");
+    text_of_help.push_back("\t\t To read data from file different than default 'xdatc', provide appropriate\n");
+    text_of_help.push_back("\t\t name of the file on the last position:\n");
+    text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067 xdatsc_001_0067.bin\n");
+    text_of_help.push_back("\t\t or more simpler form:\n");
+    text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067 xdatsc\n");
+    text_of_help.push_back("\t\t Data file name need to have prefix 'xdatas'.\n");
+    text_of_help.push_back("\t\t Accepted detectors names: H1, L1, V1.\n");
+    text_of_help.push_back("\t\t Sum of Fisher matrices is obtain with applying unbiased estimator of variation.\n");
+    text_of_help.push_back("\t\t To change for biased version type: -u f, f - false, t - true (default set).\n");
     text_of_help.push_back("\n");
-    text_of_help.push_back("\n");
-    text_of_help.push_back("\n");
-    text_of_help.push_back("\n");
+    text_of_help.push_back("\t EXAMPLES for Directed searches\n");
+    text_of_help.push_back("\t ./gg -c 0.75 -i 0.0 -t d -nd 300000 -a s1 -s 1 -cv t\n");
+    text_of_help.push_back("\t ./gg -c 0.75 -i 0.5 -t d  -a s1 -s 1 -p d\n");
+    text_of_help.push_back("\t ./gg -c 0.75 -i 0.5 -t d  -a s1 -s 2 -cv t\n");
+    text_of_help.push_back("\t ./gg -c 0.75 -i 0.5 -t d  -a s1 -s 3 -cv f\n");
+    text_of_help.push_back("\t ./gg -c 0.75 0.99 -i 0.5 -t d -a s1 -s 2 -p d\n");
+    text_of_help.push_back("\t ./gg -c 0.01 0.999 0.001 -i 0.5 -t d -a s1 -s 3 -n 19 -p d\n");
+    text_of_help.push_back("\t ./gg -c 0.01 0.999 0.001 -i 0.5 -t d -a s2 -s 1 -n 19 -p d\n");
+    text_of_help.push_back("\t ./gg -c 0.01 0.999 0.001 -i 0.5 -t d -a s2 -s 1 -n 19 -nd 689312 -p d\n");
     text_of_help.push_back("\n");
     text_of_help.push_back("\t **********************************************************\n");
     text_of_help.push_back("\t * POLGRAW Group                                          *\n");
@@ -398,7 +452,7 @@ std::vector<std::string> Manual::init_m_version(std::string ver="") const
 
     text_of_version.push_back("\t *******************************************");
     text_of_version.push_back(ver);
-    text_of_version.push_back("\t * Copyright 2015 - 2018 Andrzej Pisarski. *");
+    text_of_version.push_back("\t * Copyright 2015 - 2020 Andrzej Pisarski. *");
     text_of_version.push_back("\t * License of GridsGenerator: CC-BY-NC-ND. *");
     text_of_version.push_back("\t * Additional credits to:                  *");
     text_of_version.push_back("\t * Piotr Jaranowski                        *");

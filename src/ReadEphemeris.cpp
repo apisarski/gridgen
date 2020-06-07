@@ -4,6 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     20/05/2015
+// Modification:07/06/2020 A.Pisarski
 ///////////////////////////////////////
 
 #include "ReadEphemeris.h"
@@ -13,8 +14,9 @@
 
 ReadEphemeris::ReadEphemeris(const std::vector<std::string> paths)//&
 {
-    if(paths.size()!=3)
+    if(paths.size()%3!=0)
     {
+        //std::cout << "paths.size()=" << paths.size() << std::endl;
         std::string error="Missing at least one of paths files!";
         throw std::runtime_error(error);
     }
@@ -113,7 +115,7 @@ const std::vector<double>& ReadEphemeris::get_ephemeris2() const
     return m_ephemeris2;
 }
 
-unsigned int ReadEphemeris::get_length() const
+unsigned int ReadEphemeris::get_ephemeris_length() const
 {
     return m_length;
 }

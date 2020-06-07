@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="gg_0.2.34" />
+		<Option title="gg_0.3.05" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Option show_notes="0">
@@ -47,14 +47,19 @@
 		<Unit filename="include/CellS2.h" />
 		<Unit filename="include/DataS2.h" />
 		<Unit filename="include/DensityS1.h" />
+		<Unit filename="include/DensityS1DS.h" />
 		<Unit filename="include/DensityS2.h" />
 		<Unit filename="include/FisherRM.h" />
+		<Unit filename="include/FisherRMDS.h" />
 		<Unit filename="include/GridS1.h" />
+		<Unit filename="include/GridS1DS.h" />
 		<Unit filename="include/GridS2.h" />
+		<Unit filename="include/GridS2DS.h" />
 		<Unit filename="include/Manual.h" />
 		<Unit filename="include/Node.h" />
 		<Unit filename="include/OptionValue.h" />
 		<Unit filename="include/ReadConfig.h" />
+		<Unit filename="include/ReadData.h" />
 		<Unit filename="include/ReadEphemeris.h" />
 		<Unit filename="include/num.h" />
 		<Unit filename="include/stringmanip.h" />
@@ -62,14 +67,19 @@
 		<Unit filename="src/CellS2.cpp" />
 		<Unit filename="src/DataS2.cpp" />
 		<Unit filename="src/DensityS1.cpp" />
+		<Unit filename="src/DensityS1DS.cpp" />
 		<Unit filename="src/DensityS2.cpp" />
 		<Unit filename="src/FisherRM.cpp" />
+		<Unit filename="src/FisherRMDS.cpp" />
 		<Unit filename="src/GridS1.cpp" />
+		<Unit filename="src/GridS1DS.cpp" />
 		<Unit filename="src/GridS2.cpp" />
+		<Unit filename="src/GridS2DS.cpp" />
 		<Unit filename="src/Manual.cpp" />
 		<Unit filename="src/Node.cpp" />
 		<Unit filename="src/OptionValue.cpp" />
 		<Unit filename="src/ReadConfig.cpp" />
+		<Unit filename="src/ReadData.cpp" />
 		<Unit filename="src/ReadEphemeris.cpp" />
 		<Unit filename="src/num.cpp" />
 		<Unit filename="src/stringmanip.cpp" />

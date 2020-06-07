@@ -5,21 +5,21 @@
 
 
 **Title: GridsGenerator** 
-- Version:		0.2.34
-- Release Date:		2018-07-31
+- Version:		0.3.05
+- Release Date:		2020-06-08
 
 Author: Andrzej Pisarski
 - Email Address:	[a.pisarski](a.pisarski@uwb.edu.pl)
 - Web Page:		[Web Page](http://alpha.uwb.edu.pl/ap/gw/)
-
+- GitHub:	https://github.com/apisarski/gridgen
 Additional Credits to:   
 * Piotr Jaranowski
 * Michal Bejger
 
-Call examples: 
+Examples: 
 
 - ./gridgen -m 0.5 -p dfg -d 42/ -n 19
-- ./gridgen -c 0.2 -d 42/ -a s1 -s 2 -n 19 -cv t -p dgo
+- ./gridgen -c 0.2 -d 42/ -a s1 -s 2 -n 19 -cv t -p dg
 
 More information:
 - ./gridgen -h

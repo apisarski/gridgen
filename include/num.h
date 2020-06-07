@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     10/06/2015
-// Modification: 9/01/2018
+// Modification:03/05/2020
 ///////////////////////////////////////
 
 #ifndef NUM_H_INCLUDED
@@ -14,12 +14,17 @@
 
 namespace num
 {
+    static const unsigned int max_spindownDS = 3;
+
     double simpson(const std::vector<double>&);
     double simpson(const std::vector<double>&, const std::vector<double>&);
     double boole(const std::vector<double>&);
     double boole(const std::vector<double>&, const std::vector<double>&);
 
-    bool IsBTZ (double);
+    double avg(const std::vector<double>&);
+    double var(const std::vector<double>&, double avg = 0, bool unbiased = true);
+
+    bool IsPositive (double);
     double length(const std::vector<double>&);              // return length of the a vector
     std::vector<double> norm(const std::vector<double>&);   // return normalized a vector
 
@@ -52,6 +57,8 @@ namespace num
     /// Fourier frequency (_prim - space with hyper-spheres)
     double delta_omega_zero(unsigned int, unsigned int);
     double delta_omega_zero_prim(double, unsigned int, unsigned int);
+    double a(double c0);    //Coefficient 'a' - can be used to translate from original space (ellipses)
+    unsigned int k(unsigned int, unsigned int); // for more info see 'num.cpp'
 
     /// Sphere packings:
     std::vector<double> gram(unsigned int);//return a Gram matrix (for a given dimension);
@@ -59,7 +66,7 @@ namespace num
     std::vector<double> a_star_r1(unsigned int);//return A[n]* matrix; radius of covering is equal to 1;
 
     double sphere_volume(unsigned int dim, double radius=1.0);
-    double covering_radius(unsigned int);//covering radius for a grid a_star;
+    double covering_radius_a_star(unsigned int);//covering radius for a grid a_star;
     double thickness(const std::vector<double>&, double, unsigned int);
 
 }
