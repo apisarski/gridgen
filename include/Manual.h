@@ -4,6 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     15/11/2015
+// Modification:14/06/2020 A.Pisarski
 ///////////////////////////////////////
 
 #ifndef MANUAL_H
@@ -15,7 +16,7 @@
 class Manual
 {
     public:
-        Manual(std::string, unsigned int pages=14);
+        Manual(std::string, unsigned int pages=15);
 
         std::vector<std::string> help();
         std::vector<std::string> version();

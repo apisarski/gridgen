@@ -5,13 +5,14 @@
 
 
 **Title: GridsGenerator** 
-- Version:		0.3.05
-- Release Date:		2020-06-08
+- Version:		0.3.06
+- Release Date:		2020-06-14
 
 Author: Andrzej Pisarski
 - Email Address:	[a.pisarski](a.pisarski@uwb.edu.pl)
 - Web Page:		[Web Page](http://alpha.uwb.edu.pl/ap/gw/)
 - GitHub:	https://github.com/apisarski/gridgen
+
 Additional Credits to:   
 * Piotr Jaranowski
 * Michal Bejger

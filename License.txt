@@ -1,4 +1,4 @@
-﻿GridsGenerator (versions 0.3.XX) is under CC-NC-SA license.
+﻿GridsGenerator (versions 0.3.XX) is under CC-BY-NC-SA license.
 https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 
 To use this software, please add to your paper to co-author list

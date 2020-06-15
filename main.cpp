@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     13/10/2015
-// Modification:08/06/2020 A.Pisarski
+// Modification:14/06/2020 A.Pisarski
 ///////////////////////////////////////
 
 #include "ReadConfig.h"
@@ -31,7 +31,7 @@
 #include "FisherRM.h"
 #include "ReadData.h"
 #include "ReadEphemeris.h"
-/// Directed searches: (from line 1724)
+/// Directed searches: (from line 1767)
 #include "DensityS1DS.h"
 #include "GridS1DS.h"
 #include "GridS2DS.h"
@@ -241,7 +241,7 @@ int main(int argc, char* argv[])
 
         }
 
-        Manual manual("\t * Build 0.3.05 (alpha).                   *");
+        Manual manual("\t * Build 0.3.06 (alpha).                   *");
 
         double CovarianceMin, CovarianceMax, CovarianceStep=0.01;
         double InitialTimeMin=0.5, InitialTimeMax, InitialTimeStep;
@@ -312,6 +312,7 @@ int main(int argc, char* argv[])
                 }
 
                 /// Directory: Path, PathSave. SegmentNo, Detector#, Band, DataFile
+                string lastDataName = "";
                 if( if_exist(options_found, "-d") && TypeSearch=="All-Sky" )
                 {
                     map<string, vector<string> >::const_iterator it = options_found.find("-d");
@@ -351,12 +352,26 @@ int main(int argc, char* argv[])
                             if(PathK >=5 && PathK <= 7){
                                 string last = temp[temp.size()-1];
                                 string dataFileName2find = "xdats";
-                                if(last.find_first_of(dataFileName2find)!=std::string::npos){
+                                if(last.find(dataFileName2find)!=std::string::npos){
                                     Band = temp[temp.size()-2];
-                                    if(last.find_first_of(".bin")!=std::string::npos){
+                                    if(last.find(".bin")!=std::string::npos){
+                                        size_t si = last.find("_");
+                                        if(si!=std::string::npos){
+                                            lastDataName = last.substr(si-1, 1);// to add last letter xdats"C" to output
+                                            // for test:
+                                            //cout << lastDataName << endl;
+                                        }
+
                                         DataFile = last;
                                     }
                                     else{
+                                        size_t si = last.size();
+                                        if(si>=2){
+                                            lastDataName = last.substr(si-1, 1);
+                                            // for test:
+                                            //cout << lastDataName << endl;
+                                        }
+
                                         DataFile = last + "_" + SegmentNo + "_" + Band + ".bin";
                                     }
                                 }
@@ -705,17 +720,27 @@ int main(int argc, char* argv[])
                             }
                         }
                     }
+
+                    if(no_match){
+                        string error = "Arguments for -p (--print) can be only: d (density of covering),\n"
+                        "f (Fisher reduced matrix), g (grid), a (all: density, Fisher matrix, grid).\n";
+                        //"t - print on terminal.\n";
+                        throw domain_error(error);
+                    }
+
+                    /* // for testing
+                    cout << "test *1*" << no_match << endl;
+                    cout << "SaveDensityOfCovering = " << SaveDensityOfCovering << endl;
+                    cout << "SaveFisherMatrix = " << SaveFisherMatrix << endl;
+                    cout << "SaveGrid = " << SaveGrid << endl;
+                    */
                 }
                 else{
+                    SaveGrid=="False"; SaveFisherMatrix=="False"; SaveDensityOfCovering=="False";
                     no_match = false;
                 }
                 //cout<< no_match << endl;
-                if(no_match){
-                    string error = "Arguments for -p (--print) can be only: d (density of covering),\n"
-                    "f (Fisher reduced matrix), g (grid), a (all: density, Fisher matrix, grid).\n";
-                    //"t - print on terminal.\n";
-                    throw domain_error(error);
-                }
+
 
                 ///Unbiased
                 if( if_exist(options_found, "-u") )
@@ -766,8 +791,8 @@ int main(int argc, char* argv[])
 
                 unsigned int nfft = pow(2, NfftExpLength);
 
-
-                cout << "ChooseMethod: " << ChooseMethod << endl;
+                // for test
+                ///cerr << "ChooseMethod: " << ChooseMethod << endl;
 
                 //cout << "DataLength= " << DataLength << endl;
                 if(TypeSearch == "All-Sky" && Spindown == 1){
@@ -845,6 +870,9 @@ int main(int argc, char* argv[])
                             }
                             cp_FM = new FisherRM(detectors_ephemeris, sigma4deta, Spindown);
 
+                            if(lastDataName!=""){
+                                gridout+=lastDataName;
+                            }
                             ///#mb binary file grid bin
                             gridout+=".bin";
                         }
@@ -855,6 +883,7 @@ int main(int argc, char* argv[])
                                 PathSSB = gridout + "rSSB.bin";
                                 PathDet = gridout + "rDet.bin";
                                 PathDetSSB = gridout + "DetSSB.bin";
+                                gridout+="grid.bin";
                             }
                             else{
                                 gridout = PathSave + "grid.bin";
@@ -874,6 +903,11 @@ int main(int argc, char* argv[])
                         }
 
                         std::ofstream gridbin(gridout, std::ios::binary);
+                        if(gridbin.fail())
+                        {
+                            std::string error="Can not find: " + gridout;
+                            throw std::runtime_error(error);
+                        }
                         if(SaveGrid=="False" && SaveFisherMatrix=="False" && SaveDensityOfCovering=="False")
                             cout << "grid.bin will be saved in " << gridout << endl;
 
@@ -1327,6 +1361,9 @@ int main(int argc, char* argv[])
                             cp_FM = new FisherRM(detectors_ephemeris, sigma4deta, Spindown);
 
                             ///#mb binary file grid bin
+                            if(lastDataName!=""){
+                                gridout+=lastDataName;
+                            }
                             gridout+=".bin";
                         }
                         else{
@@ -1336,6 +1373,7 @@ int main(int argc, char* argv[])
                                 PathSSB = gridout + "rSSB.bin";
                                 PathDet = gridout + "rDet.bin";
                                 PathDetSSB = gridout + "DetSSB.bin";
+                                gridout+="grid.bin";
                             }
                             else{
                                 gridout = PathSave + "grid.bin";
@@ -1355,6 +1393,11 @@ int main(int argc, char* argv[])
                         }
 
                         std::ofstream gridbin(gridout, std::ios::binary);
+                        if(gridbin.fail())
+                        {
+                            std::string error="Can not find: " + gridout;
+                            throw std::runtime_error(error);
+                        }
                         if(SaveGrid=="False" && SaveFisherMatrix=="False" && SaveDensityOfCovering=="False")
                             cout << "grid.bin will be saved in " << gridout << endl;
 
@@ -2053,8 +2096,9 @@ int main(int argc, char* argv[])
                     delete cp_FMDS;
                 }
                 if(TypeSearch == "Directed" && Spindown >= 2){
+                    // for test:
+                    //cout << "dim= " << dim << endl;
 
-                    cout << "dim= " << dim << endl;
                     unsigned int data_length;
                     if(DataLength==0){
                         data_length = DataLengthDS; /// Default length of data 'DataLengthDS'.

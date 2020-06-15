@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     15/11/2015
-// Modification: 08/06/2020 A.Pisarski
+// Modification:14/06/2020 A.Pisarski
 ///////////////////////////////////////
 
 #include "Manual.h"
@@ -116,15 +116,19 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t ./gg [-h|--help] [-ht|--helptxt] [-v|--version] [-aa|--author]\n");
     text_of_help.push_back("\n");
     text_of_help.push_back("DESCRIPTION\n");
-    text_of_help.push_back("\t GridsGenerator (GG) is designated to be used in all-sky narrow-band and directed\n");
+    text_of_help.push_back("\t GridsGenerator (GG) is designated to be used in All-Sky narrow-band and Directed\n");
     text_of_help.push_back("\t searches of continuous gravitational waves. Program allow to:\n");
     text_of_help.push_back("\t - generate efficient grid(s) for chosen initial time of observation (1).\n");
     text_of_help.push_back("\t - generate reduced Fisher matrix for chosen initial time of observation (1),\n");
     text_of_help.push_back("\t - generate density of covering (2).\n");
-    text_of_help.push_back("\t (1) To get result, ephemeris must be provided; grids always have form of lower\n");
+    text_of_help.push_back("\t (1) To get result, ephemeris must be provided (All-Sky); grids always have form of lower\n");
     text_of_help.push_back("\t triangular matrix.\n");
     text_of_help.push_back("\t (2) Result can be get without ephemeris (for more information see flags: -nd\n");
     text_of_help.push_back("\t (--ndata)).\n");
+    text_of_help.push_back("\n");
+    text_of_help.push_back("\n");
+    text_of_help.push_back("\n");
+    text_of_help.push_back("\n");
     text_of_help.push_back("\n");
     text_of_help.push_back("FLAGS\n");
     text_of_help.push_back("   Flags with (optional) argument(s):\n");
@@ -142,8 +146,6 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t a - automatically choose algorithm 's1' or 's2'. Use this argument to allow\n");
     text_of_help.push_back("\t\t GridsGenerator to decide which algorithm (for given parameters) should be\n");
     text_of_help.push_back("\t\t used to get grid with better density of covering.\n");
-    text_of_help.push_back("\t\t Information about implemented algorithms can be found in article:\n");
-    text_of_help.push_back("\t\t http://dx.doi.org/10.1088/0264-9381/32/14/145014\n");
     text_of_help.push_back("\t\t Default set: a.\n");
     text_of_help.push_back("\n");
     text_of_help.push_back("\t   >>> Options for All-Sky searches only <<<\n");
@@ -160,9 +162,9 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t To get result for more than one detector (with applying\n");
     text_of_help.push_back("\t\t sum of reduced fisher matrices):\n");
     text_of_help.push_back("\t\t -d <path> <SegmentNo> <detectorX> ... <detectorZ> <band>\n");
-    text_of_help.push_back("\t\t Provide at least two or more detectors.");
+    text_of_help.push_back("\t\t Provide at least two or more detectors.\n");
     text_of_help.push_back("\t\t E.g. -d /home/ligo/ 001 H1 L1 0371; -d /home/ligo/ 001 H1 L1 V1 0371.\n");
-    text_of_help.push_back("\t\t To read data from file different than default 'xdatc', provide appropriate\n");
+    text_of_help.push_back("\t\t To read data from file different than default 'xdats', provide appropriate\n");
     text_of_help.push_back("\t\t name of the file on the last position:\n");
     text_of_help.push_back("\t\t -d /home/ligo/ 001 H1 L1 0371 xdatsc_001_0067.bin\n");
     text_of_help.push_back("\t\t or more simpler form:\n");
@@ -294,7 +296,7 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t f - Fisher reduced matrix,\n");
     text_of_help.push_back("\t\t g - grid.\n");
     text_of_help.push_back("\t\t if any option provided, program will work with Michal Bejger's sets\n");
-    text_of_help.push_back("\t\t (result saved to the 'grid.bin' file); a - this same as: dfg. Default set: g.\n");
+    text_of_help.push_back("\t\t (default set; result saved to 'grid.bin'); a - this same as: dfg.\n");
     text_of_help.push_back("\t\t Option can be joined (order is not important), e.g. df, dg, fg, dfg.\n");
     text_of_help.push_back("\t\t #### If argument of flag -nd is set to be bigger than zero, flag -p\n");
     text_of_help.push_back("\t\t #### can accept only 'd' argument (All-Sky).\n");
@@ -407,19 +409,28 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t\t # That clue apply to both: covariance (-c)/minimal match (-m) and\n");
     text_of_help.push_back("\t\t # initial time (-i).\n");
     text_of_help.push_back("\n");
+    text_of_help.push_back("\t EXAMPLES for All-Sky searches (more than one detector).\n");
     text_of_help.push_back("\t\t To get result for more than one detector (with applying\n");
     text_of_help.push_back("\t\t sum of reduced fisher matrices):\n");
     text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067\n");
     text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 V1 0067.\n");
-    text_of_help.push_back("\t\t To read data from file different than default 'xdatc', provide appropriate\n");
+    text_of_help.push_back("\t\t To read data from file different than default 'xdats', provide appropriate\n");
     text_of_help.push_back("\t\t name of the file on the last position:\n");
     text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067 xdatsc_001_0067.bin\n");
     text_of_help.push_back("\t\t or more simpler form:\n");
     text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067 xdatsc\n");
-    text_of_help.push_back("\t\t Data file name need to have prefix 'xdatas'.\n");
+    text_of_help.push_back("\t\t Data file name need to have prefix 'xdats'.\n");
     text_of_help.push_back("\t\t Accepted detectors names: H1, L1, V1.\n");
     text_of_help.push_back("\t\t Sum of Fisher matrices is obtain with applying unbiased estimator of variation.\n");
     text_of_help.push_back("\t\t To change for biased version type: -u f, f - false, t - true (default set).\n");
+    text_of_help.push_back("\t\t Both notation:\n");
+    text_of_help.push_back("\t ./gg -c 0.75 -a s1 -s 1 -n 19 -d ../O3_6d_test/001/V1/\n");
+    text_of_help.push_back("\t\t and\n");
+    text_of_help.push_back("\t ./gg -c 0.75 -a s1 -s 1 -n 19 -d ../O3_6d_test/ 001 V1\n");
+    text_of_help.push_back("\t\t are equivalent (prints this same result).\n");
+    text_of_help.push_back("\t ./gg -c 0.75 -a s1 -s 1 -n 19 -d ../O3_6d_test/ 001 H1 L1 0067 xdatsc -u f\n");
+    text_of_help.push_back("\t\t Output will be saved in folder: ../O3_6d_test/001/grids/ (\"grids\" folder\n");
+    text_of_help.push_back("\t\t have to exist). Name of output file: grid_001_0067_H1L1c.bin\n");
     text_of_help.push_back("\n");
     text_of_help.push_back("\t EXAMPLES for Directed searches\n");
     text_of_help.push_back("\t ./gg -c 0.75 -i 0.0 -t d -nd 300000 -a s1 -s 1 -cv t\n");
@@ -453,7 +464,7 @@ std::vector<std::string> Manual::init_m_version(std::string ver="") const
     text_of_version.push_back("\t *******************************************");
     text_of_version.push_back(ver);
     text_of_version.push_back("\t * Copyright 2015 - 2020 Andrzej Pisarski. *");
-    text_of_version.push_back("\t * License of GridsGenerator: CC-BY-NC-ND. *");
+    text_of_version.push_back("\t * License of GridsGenerator: CC-BY-NC-SA. *");
     text_of_version.push_back("\t * Additional credits to:                  *");
     text_of_version.push_back("\t * Piotr Jaranowski                        *");
     text_of_version.push_back("\t *******************************************");
