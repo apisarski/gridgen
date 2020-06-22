@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     20/05/2015
-// Modification:31/05/2020
+// Modification:21/06/2020
 ///////////////////////////////////////
 
 #include "FisherRM.h"
@@ -12,7 +12,7 @@
 #include <cmath>
 #include <stdexcept>
 
-#include <iostream>
+//#include <iostream>
 
 FisherRM::FisherRM():m_ephemeris_length(0), m_number_of_detectors(-1), m_spindown(-1)
 {
@@ -90,12 +90,12 @@ FisherRM::FisherRM(const std::vector<std::vector<double> >& ephemeris, const std
 
     std::vector<double> x(m_ephemeris_length,0);
     std::vector<double> x2(m_ephemeris_length,0);
-
+    /*
     for(unsigned int i=0; i<m_sigma.size(); i++){
         std::cout << "sigma[" << i << "]=" << m_sigma[i] << ", ";
     }
     std::cout << std::endl;
-
+    */
     for(unsigned int i=0; i<m_ephemeris_length; i++)
         x[i]=(static_cast<double>(i)/static_cast<double>(m_ephemeris_length-1))-0.5;
 

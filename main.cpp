@@ -31,11 +31,14 @@
 #include "FisherRM.h"
 #include "ReadData.h"
 #include "ReadEphemeris.h"
-/// Directed searches: (from line 1767)
+/// Directed searches: (from line 1814)
 #include "DensityS1DS.h"
 #include "GridS1DS.h"
 #include "GridS2DS.h"
 #include "FisherRMDS.h"
+/// For creating directory
+#include <sys/types.h>
+#include <sys/stat.h>
 
 
 using namespace std;
@@ -241,7 +244,7 @@ int main(int argc, char* argv[])
 
         }
 
-        Manual manual("\t * Build 0.3.06 (alpha).                   *");
+        Manual manual("\t * Build 0.3.07 (alpha).                   *");
 
         double CovarianceMin, CovarianceMax, CovarianceStep=0.01;
         double InitialTimeMin=0.5, InitialTimeMax, InitialTimeStep;
@@ -356,7 +359,7 @@ int main(int argc, char* argv[])
                                     Band = temp[temp.size()-2];
                                     if(last.find(".bin")!=std::string::npos){
                                         size_t si = last.find("_");
-                                        if(si!=std::string::npos){
+                                        if(si>=6){
                                             lastDataName = last.substr(si-1, 1);// to add last letter xdats"C" to output
                                             // for test:
                                             //cout << lastDataName << endl;
@@ -366,7 +369,7 @@ int main(int argc, char* argv[])
                                     }
                                     else{
                                         size_t si = last.size();
-                                        if(si>=2){
+                                        if(si>=6){
                                             lastDataName = last.substr(si-1, 1);
                                             // for test:
                                             //cout << lastDataName << endl;
@@ -841,7 +844,17 @@ int main(int argc, char* argv[])
 
                         if(detectors_size >= 2){
                             ///#mb binary file grid bin
-                            gridout = Path + SegmentNo + "/grids/grid_" + SegmentNo + "_" + Band + "_";
+                            gridout = Path + SegmentNo + "/grids/";
+                            struct stat info;
+                            int check = 0;
+                            if( stat( gridout.c_str(), &info ) != 0){
+                                check = mkdir( gridout.c_str(), 0777);
+                            }
+                            if(check){
+                                std::string error = "Unable to create directory: " + gridout;
+                            }
+                            gridout+="grid_" + SegmentNo + "_" + Band + "_";
+
                             //string path_to_data = Path + SegmentNo + "/";
                             for (map<string, string>::const_iterator go = gridouts.begin(); go != gridouts.end(); ++go )
                             {
@@ -866,7 +879,19 @@ int main(int argc, char* argv[])
 
                                 ReadData RD = ReadData(full_path_to_data);
                                 double average = num::avg(RD.get_data());
-                                sigma4deta.push_back(num::var(RD.get_data(), average, unbiased));
+                                double variance = num::var(RD.get_data(), average, unbiased);
+                                cout.precision(15);
+                                cout << "avg[" << go->first << "] = " << average;
+                                cout << ", \u03C3" << "[" << go->first << "] = " << sqrt(variance);
+                                cout << ", \u03C3" << "\u00B2" << "[" << go->first << "] = " << variance;
+                                cout.precision(6); // default set
+                                if(unbiased){
+                                    cout << " (unbiased = true).\n";
+                                }
+                                else{
+                                    cout << " (unbiased = false).\n";
+                                }
+                                sigma4deta.push_back(variance);
                             }
                             cp_FM = new FisherRM(detectors_ephemeris, sigma4deta, Spindown);
 
@@ -1333,7 +1358,17 @@ int main(int argc, char* argv[])
 
                         if(detectors_size >= 2){
                             ///#mb binary file grid bin
-                            gridout = Path + SegmentNo + "/grids/grid_" + SegmentNo + "_" + Band + "_";
+                            gridout = Path + SegmentNo + "/grids/";
+                            struct stat info;
+                            int check = 0;
+                            if( stat( gridout.c_str(), &info ) != 0){
+                                check = mkdir( gridout.c_str(), 0777);
+                            }
+                            if(check){
+                                std::string error = "Unable to create directory: " + gridout;
+                            }
+                            gridout+="grid_" + SegmentNo + "_" + Band + "_";
+                            //gridout = Path + SegmentNo + "/grids/grid_" + SegmentNo + "_" + Band + "_";
                             //string path_to_data = Path + SegmentNo + "/";
                             for (map<string, string>::const_iterator go = gridouts.begin(); go != gridouts.end(); ++go )
                             {
@@ -1356,7 +1391,19 @@ int main(int argc, char* argv[])
 
                                 ReadData RD = ReadData(full_path_to_data);
                                 double average = num::avg(RD.get_data());
-                                sigma4deta.push_back(num::var(RD.get_data(), average, unbiased));
+                                double variance = num::var(RD.get_data(), average, unbiased);
+                                cout.precision(15);
+                                cout << "avg[" << go->first << "] = " << average;
+                                cout << ", \u03C3" << "[" << go->first << "] = " << sqrt(variance);
+                                cout << ", \u03C3" << "\u00B2" << "[" << go->first << "] = " << variance;
+                                cout.precision(6); // default set
+                                if(unbiased){
+                                    cout << " (unbiased = true).\n";
+                                }
+                                else{
+                                    cout << " (unbiased = false).\n";
+                                }
+                                sigma4deta.push_back(variance);
                             }
                             cp_FM = new FisherRM(detectors_ephemeris, sigma4deta, Spindown);
 

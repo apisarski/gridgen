@@ -5,8 +5,8 @@
 
 
 **Title: GridsGenerator** 
-- Version:		0.3.06
-- Release Date:		2020-06-14
+- Version:		0.3.07
+- Release Date:		2020-06-22
 
 Author: Andrzej Pisarski
 - Email Address:	[a.pisarski](a.pisarski@uwb.edu.pl)
