@@ -4,6 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     10/06/2015
+// Modification:02/12/2024 A.P.
 ///////////////////////////////////////
 
 #include "GridS2.h"
@@ -419,8 +420,10 @@ std::vector<double> GridS2::grid(double c0, double xi, unsigned int nfft,
     //basis[0]=ro;
     std::vector<double> temp;
     temp = num::multiply_AB(base_prim_1vector, num::inverse( num::cholesky( m_fm->postrmf(xi), 4), 4), 4, 4, 4);
-    for(int i=0; i<16; i++)
-        basis[i]=r_scale*temp[i]; //basis[i+1]=
+    /// AP. Old propably wrong scaling:
+    //for(int i=0; i<16; i++)
+    //    basis[i]=r_scale*temp[i]; //basis[i+1]=
+    basis = num::multiply_AB(temp, num::diagonal(r_scale, 4), 4, 4, 4);
 
     return basis;
 }
@@ -433,8 +436,10 @@ std::vector<double> GridS2::convert(double c0, double xi, const std::vector<doub
 
     std::vector<double> temp(16, 0.0);
     temp = num::multiply_AB(grid_prim, num::inverse( num::cholesky( m_fm->postrmf(xi), 4), 4), 4, 4, 4);
-    for(int i=0; i<16; i++)
-        ws1[i]=r_scale*temp[i];
+    /// AP. Old propably wrong scaling:
+    //for(int i=0; i<16; i++)
+    //    ws1[i]=r_scale*temp[i];
+    ws1 = num::multiply_AB(temp, num::diagonal(r_scale, 4), 4, 4, 4);
 
     return ws1;
 }

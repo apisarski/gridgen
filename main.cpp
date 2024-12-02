@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     13/10/2015
-// Modification:14/06/2020 A.Pisarski
+// Modification:02/12/2024 A.Pisarski
 ///////////////////////////////////////
 
 #include "ReadConfig.h"
@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
 
         }
 
-        Manual manual("\t * Build 0.3.07 (alpha).                   *");
+        Manual manual("\t * Build 0.3.07.01 (alpha).                 *");
 
         double CovarianceMin, CovarianceMax, CovarianceStep=0.01;
         double InitialTimeMin=0.5, InitialTimeMax, InitialTimeStep;

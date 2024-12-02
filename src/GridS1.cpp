@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     10/06/2015
-// Modification:07/09/2017 A.P.
+// Modification:02/12/2024 A.P.
 ///////////////////////////////////////
 
 #include "GridS1.h"
@@ -39,8 +39,11 @@ std::vector<double> GridS1::grid(double c0, double xi, unsigned int nfft) const
     //ws1[0]=DensityS1::density(q0);
     std::vector<double> temp;
     temp = num::multiply_AB(q0, num::inverse( num::cholesky( m_fm->postrmf(xi), m_dim), m_dim), m_dim, m_dim, m_dim);
-    for(unsigned int i=0; i<dim2; i++)
-        ws1[i]=r_scale*temp[i]; //s1[i+1]=
+    /// AP. Old propably wrong scaling:
+    //for(unsigned int i=0; i<dim2; i++)
+    //    ws1[i]=r_scale*temp[i]; //s1[i+1]=
+
+    ws1 = num::multiply_AB(temp, num::diagonal(r_scale, m_dim), m_dim, m_dim, m_dim);
 
     ///ws1 = DensityS1::grid_prim(c0, nfft, data_length);
 
@@ -56,9 +59,11 @@ std::vector<double> GridS1::convert(double c0, double xi, const std::vector<doub
 
     std::vector<double> temp(dim2, 0.0);
     temp = num::multiply_AB(grid_prim, num::inverse( num::cholesky( m_fm->postrmf(xi), m_dim), m_dim), m_dim, m_dim, m_dim);
+    /// AP. Old propably wrong scaling:
+    //for(int i=0; i<dim2; i++)
+    //    ws1[i]=r_scale*temp[i]; //ws1[i]=
 
-    for(int i=0; i<dim2; i++)
-        ws1[i]=r_scale*temp[i]; //ws1[i]=
+    ws1 = num::multiply_AB(temp, num::diagonal(r_scale, m_dim), m_dim, m_dim, m_dim);
 
     return ws1;
 }
