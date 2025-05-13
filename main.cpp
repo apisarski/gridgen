@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     13/10/2015
-// Modification:14/06/2020 A.Pisarski
+// Modification:13/05/2025 A.Pisarski
 ///////////////////////////////////////
 
 #include "ReadConfig.h"
@@ -31,7 +31,7 @@
 #include "FisherRM.h"
 #include "ReadData.h"
 #include "ReadEphemeris.h"
-/// Directed searches: (from line 1814)
+/// Directed searches: (from line 1850)
 #include "DensityS1DS.h"
 #include "GridS1DS.h"
 #include "GridS2DS.h"
@@ -86,6 +86,7 @@ int main(int argc, char* argv[])
         options_available.push_back("-aa"); // show information about author(s)
         options_available.push_back("-t");  // type of searches: a - all sky, d - directed.
         options_available.push_back("-u");  // variance estimator can be unbiased, or biased (default set: unbiased == true)
+        options_available.push_back("-pd"); // prefix for files like: "xdat_001_0067.bin" (default prefix: "xdat").
 
         vector<string> options_available_long;              // order is important (mast be the same as without _long)
         options_available_long.push_back("--help");         // help
@@ -110,6 +111,7 @@ int main(int argc, char* argv[])
         options_available_long.push_back("--author");       // show information about author(s)
         options_available_long.push_back("--type");         // type of searches: a - all sky, d - directed.
         options_available_long.push_back("--unbiased");     // variance estimator can be unbiased, or biased (default set: unbiased == true)
+        options_available_long.push_back("--prefix");       // prefix for files like: "xdat_001_0067.bin" (default prefix: "xdat").
 
         /// to mark position of encounter options apart negative values
         vector<unsigned int> position;
@@ -238,13 +240,15 @@ int main(int argc, char* argv[])
                 if(options_available[i]!="-h" && options_available[i]!="-ht"
                    && options_available[i]!="-v" && options_available[i]!="-aa"
                    && options_available[i]!="-c" && options_available[i]!="-s"
-                   && options_available[i]!="-t" && options_available[i]!="-u") // && options_available[i]!="-m"
+                   && options_available[i]!="-t" && options_available[i]!="-u"
+                   //&& options_available[i]!="-pd"
+                   ) // && options_available[i]!="-m"
                         options_found[options_available[i]].push_back("");
             }
 
         }
 
-        Manual manual("\t * Build 0.3.07 (alpha).                   *");
+        Manual manual("\t * Build 0.3.07.01 (alpha).                 *");
 
         double CovarianceMin, CovarianceMax, CovarianceStep=0.01;
         double InitialTimeMin=0.5, InitialTimeMax, InitialTimeStep;
@@ -255,6 +259,8 @@ int main(int argc, char* argv[])
         int NAlpha=35, NRadius=20;
         string PathSSB, PathDet, PathDetSSB;
         string Path, SegmentNo, DetectorH="", DetectorL="", DetectorV="", Band, DataFile;
+        string PrefixDefault = "xdat";
+        string Prefix=PrefixDefault;
         unsigned int PathK; /// Number of strings in pathname.
         vector<string> paths;
         string PathSave;
@@ -314,8 +320,24 @@ int main(int argc, char* argv[])
                     }
                 }
 
+                /// Allow to provide prefix of the ".bin" file:
+
+                if( if_exist(options_found, "-pd") )
+                {
+                    map<string, vector<string> >::const_iterator it = options_found.find("-pd");
+                    vector<string>::const_iterator line_it = it->second.begin();
+
+                    if(*line_it==""){
+                        ///cout <<  "Prefix1=" << Prefix << endl;
+                    }
+                    else{
+                        Prefix = *line_it;
+                        ///cout <<  "Prefix2=" << Prefix << endl;
+                    }
+                }
+
                 /// Directory: Path, PathSave. SegmentNo, Detector#, Band, DataFile
-                string lastDataName = "";
+                //string lastDataName = "";
                 if( if_exist(options_found, "-d") && TypeSearch=="All-Sky" )
                 {
                     map<string, vector<string> >::const_iterator it = options_found.find("-d");
@@ -332,6 +354,7 @@ int main(int argc, char* argv[])
                             temp.push_back(*line_it);
                             ++line_it; PathK++;
                         }
+                        ///cout << PathK << endl;
 
                         if(PathK == 1){
                             PathSave = temp[0];
@@ -354,26 +377,35 @@ int main(int argc, char* argv[])
 
                             if(PathK >=5 && PathK <= 7){
                                 string last = temp[temp.size()-1];
-                                string dataFileName2find = "xdats";
+                                ///cout << "last= " << last <<endl;
+                                ///cout << "Prefix= " << Prefix << endl;
+                                string dataFileName2find = Prefix; /// "xdats"
                                 if(last.find(dataFileName2find)!=std::string::npos){
                                     Band = temp[temp.size()-2];
+                                    ///cout << "Band= " << Band << endl;
                                     if(last.find(".bin")!=std::string::npos){
                                         size_t si = last.find("_");
-                                        if(si>=6){
+                                        //cout << "s1= " << si << endl;
+                                        /*
+                                        if(si>=4){
                                             lastDataName = last.substr(si-1, 1);// to add last letter xdats"C" to output
                                             // for test:
-                                            //cout << lastDataName << endl;
+                                            cout << "lastDataName1= " << lastDataName << endl;
                                         }
+                                        */
 
                                         DataFile = last;
                                     }
                                     else{
                                         size_t si = last.size();
-                                        if(si>=6){
+                                        //cout << "s2= " << si << endl;
+                                        /*
+                                        if(si>=4){
                                             lastDataName = last.substr(si-1, 1);
                                             // for test:
-                                            //cout << lastDataName << endl;
+                                            cout << "lastDataName2= " << endl;
                                         }
+                                        */
 
                                         DataFile = last + "_" + SegmentNo + "_" + Band + ".bin";
                                     }
@@ -392,6 +424,7 @@ int main(int argc, char* argv[])
                             string error = error1 + error2 + error3 + error4;
                             throw domain_error(error);
                         }
+                        ///cout << "DataFile= " << DataFile << endl;
                     }
                 }
                 //cout << PathSSB << endl;
@@ -894,10 +927,11 @@ int main(int argc, char* argv[])
                                 sigma4deta.push_back(variance);
                             }
                             cp_FM = new FisherRM(detectors_ephemeris, sigma4deta, Spindown);
-
+                            /*
                             if(lastDataName!=""){
                                 gridout+=lastDataName;
                             }
+                            */
                             ///#mb binary file grid bin
                             gridout+=".bin";
                         }
@@ -1408,9 +1442,11 @@ int main(int argc, char* argv[])
                             cp_FM = new FisherRM(detectors_ephemeris, sigma4deta, Spindown);
 
                             ///#mb binary file grid bin
+                            /*
                             if(lastDataName!=""){
                                 gridout+=lastDataName;
                             }
+                            */
                             gridout+=".bin";
                         }
                         else{

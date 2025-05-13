@@ -871,3 +871,236 @@
 
 1592205155 source:/home/carinae/gridgen/gridgen_v0.3.07/gg.rc
 
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/CellS2.cpp
+	"CellS2.h"
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/CellS2.h
+	<vector>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/DataS2.cpp
+	"DataS2.h"
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/DataS2.h
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/DensityS1.cpp
+	"DensityS1.h"
+	"Node.h"
+	"num.h"
+	<string>
+	<stdexcept>
+	<cmath>
+	<algorithm>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/DensityS1.h
+	<vector>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/Node.h
+	<vector>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/num.h
+	<vector>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/DensityS1DS.cpp
+	"DensityS1DS.h"
+	"Node.h"
+	"num.h"
+	<string>
+	<stdexcept>
+	<cmath>
+	<algorithm>
+	<iostream>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/DensityS1DS.h
+	<vector>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/DensityS2.cpp
+	"DensityS2.h"
+	"num.h"
+	<stdexcept>
+	<cmath>
+	<fstream>
+	<stdexcept>
+	<iostream>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/DensityS2.h
+	"DataS2.h"
+	<string>
+	<vector>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/FisherRM.cpp
+	"FisherRM.h"
+	"num.h"
+	<cmath>
+	<stdexcept>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/FisherRM.h
+	<string>
+	<vector>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/FisherRMDS.cpp
+	"FisherRMDS.h"
+	"num.h"
+	<stdexcept>
+	<cmath>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/FisherRMDS.h
+	<string>
+	<vector>
+
+1747141136 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/Manual.cpp
+	"Manual.h"
+	<iostream>
+	<fstream>
+	<iomanip>
+	<stdexcept>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/Manual.h
+	<vector>
+	<string>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/Node.cpp
+	"Node.h"
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/num.cpp
+	"num.h"
+	<stdexcept>
+	<algorithm>
+	<queue>
+	<cmath>
+	<iostream>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/OptionValue.cpp
+	"OptionValue.h"
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/OptionValue.h
+	<string>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/ReadConfig.cpp
+	"ReadConfig.h"
+	<fstream>
+	<iostream>
+	<algorithm>
+	<stdexcept>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/ReadConfig.h
+	"OptionValue.h"
+	<vector>
+	<string>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/ReadData.cpp
+	"ReadData.h"
+	<stdexcept>
+	<fstream>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/ReadData.h
+	<vector>
+	<string>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/ReadEphemeris.cpp
+	"ReadEphemeris.h"
+	<stdexcept>
+	<fstream>
+	<cmath>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/ReadEphemeris.h
+	<vector>
+	<string>
+
+1733146694 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/stringmanip.cpp
+	"stringmanip.h"
+	<algorithm>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/stringmanip.h
+	<string>
+
+1733415835 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/GridS1.cpp
+	"GridS1.h"
+	"num.h"
+	<stdexcept>
+	<cmath>
+	<string>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/GridS1.h
+	"DensityS1.h"
+	"FisherRM.h"
+	<vector>
+
+1733415835 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/GridS1DS.cpp
+	"GridS1DS.h"
+	"num.h"
+	<stdexcept>
+	<cmath>
+	<string>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/GridS1DS.h
+	"DensityS1DS.h"
+	"FisherRMDS.h"
+	<vector>
+
+1733415835 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/GridS2.cpp
+	"GridS2.h"
+	"DataS2.h"
+	"num.h"
+	<stdexcept>
+	<cmath>
+	<algorithm>
+	<functional>
+	<iterator>
+	<fstream>
+	<iomanip>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/GridS2.h
+	"FisherRM.h"
+	"CellS2.h"
+	"DataS2.h"
+	<string>
+	<vector>
+
+1733415835 source:/home/andrzej/Dokumenty/GitHub/gridgen/src/GridS2DS.cpp
+	"GridS2DS.h"
+	"num.h"
+	<stdexcept>
+	<cmath>
+	<algorithm>
+	<functional>
+	<iterator>
+	<fstream>
+	<iomanip>
+	<iostream>
+
+1733146694 /home/andrzej/Dokumenty/GitHub/gridgen/include/GridS2DS.h
+	"FisherRMDS.h"
+	"CellS2.h"
+	"DataS2.h"
+	<string>
+	<vector>
+
+1747141018 source:/home/andrzej/Dokumenty/GitHub/gridgen/main.cpp
+	"ReadConfig.h"
+	"OptionValue.h"
+	"num.h"
+	"stringmanip.h"
+	"Manual.h"
+	<iostream>
+	<fstream>
+	<iomanip>
+	<stdexcept>
+	<cstdlib>
+	<cmath>
+	<string>
+	<map>
+	<algorithm>
+	"DensityS1.h"
+	"DensityS2.h"
+	"GridS1.h"
+	"GridS2.h"
+	"FisherRM.h"
+	"ReadData.h"
+	"ReadEphemeris.h"
+	"DensityS1DS.h"
+	"GridS1DS.h"
+	"GridS2DS.h"
+	"FisherRMDS.h"
+	<sys/types.h>
+	<sys/stat.h>
+

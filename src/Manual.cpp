@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     15/11/2015
-// Modification:14/06/2020 A.Pisarski
+// Modification:13/05/2025 A.Pisarski
 ///////////////////////////////////////
 
 #include "Manual.h"
@@ -411,15 +411,17 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\n");
     text_of_help.push_back("\t EXAMPLES for All-Sky searches (more than one detector).\n");
     text_of_help.push_back("\t\t To get result for more than one detector (with applying\n");
-    text_of_help.push_back("\t\t sum of reduced fisher matrices):\n");
-    text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067\n");
-    text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 V1 0067.\n");
-    text_of_help.push_back("\t\t To read data from file different than default 'xdats', provide appropriate\n");
+    text_of_help.push_back("\t\t sum of reduced fisher matrices).\n");
+    //text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067\n");
+    //text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 V1 0067.\n");
+    text_of_help.push_back("\t\t To read data from file different than default 'xdat', provide appropriate\n");
     text_of_help.push_back("\t\t name of the file on the last position:\n");
     text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067 xdatsc_001_0067.bin\n");
     text_of_help.push_back("\t\t or more simpler form:\n");
     text_of_help.push_back("\t\t ./gg -d /home/ligo/ 001 H1 L1 0067 xdatsc\n");
-    text_of_help.push_back("\t\t Data file name need to have prefix 'xdats'.\n");
+    text_of_help.push_back("\t\t Name of data file need to beging with prefix 'xdat'.\n");
+    text_of_help.push_back("\t\t To change prefix, type: -pd <string>, <string> take any string argument.\n");
+    text_of_help.push_back("\t\t Default set: 1.\n");
     text_of_help.push_back("\t\t Accepted detectors names: H1, L1, V1.\n");
     text_of_help.push_back("\t\t Sum of Fisher matrices is obtain with applying unbiased estimator of variation.\n");
     text_of_help.push_back("\t\t To change for biased version type: -u f, f - false, t - true (default set).\n");
@@ -429,6 +431,7 @@ std::vector<std::string> Manual::init_m_help() const
     text_of_help.push_back("\t ./gg -c 0.75 -a s1 -s 1 -n 19 -d ../O3_6d_test/ 001 V1\n");
     text_of_help.push_back("\t\t are equivalent (prints this same result).\n");
     text_of_help.push_back("\t ./gg -c 0.75 -a s1 -s 1 -n 19 -d ../O3_6d_test/ 001 H1 L1 0067 xdatsc -u f\n");
+    text_of_help.push_back("\t ./gg -c 0.75 -a s1 -s 1 -n 19 -d ../data/O3_6d_test/ 001 H1 L1 0067 -pd xdatsc\n");
     text_of_help.push_back("\t\t Output will be saved in folder: ../O3_6d_test/001/grids/ (\"grids\" folder\n");
     text_of_help.push_back("\t\t have to exist). Name of output file: grid_001_0067_H1L1c.bin\n");
     text_of_help.push_back("\n");
@@ -463,7 +466,7 @@ std::vector<std::string> Manual::init_m_version(std::string ver="") const
 
     text_of_version.push_back("\t *******************************************");
     text_of_version.push_back(ver);
-    text_of_version.push_back("\t * Copyright 2015 - 2020 Andrzej Pisarski. *");
+    text_of_version.push_back("\t * Copyright 2015 - 2025 Andrzej Pisarski. *");
     text_of_version.push_back("\t * License of GridsGenerator: CC-BY-NC-SA. *");
     text_of_version.push_back("\t * Additional credits to:                  *");
     text_of_version.push_back("\t * Piotr Jaranowski                        *");

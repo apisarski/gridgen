@@ -1,1 +1,10 @@
 gridgen
+42/grid.bin
+*.o
+t1.txt
+t2.txt
+t3.txt
+tt.txt
+grid.bin
+bin/Release/gg
+gg_
