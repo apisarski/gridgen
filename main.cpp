@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     13/10/2015
-// Modification:13/05/2025 A.Pisarski
+// Modification:23/06/2025 A.Pisarski
 ///////////////////////////////////////
 
 #include "ReadConfig.h"
@@ -31,7 +31,7 @@
 #include "FisherRM.h"
 #include "ReadData.h"
 #include "ReadEphemeris.h"
-/// Directed searches: (from line 1850)
+/// Directed searches: (from line 1856)
 #include "DensityS1DS.h"
 #include "GridS1DS.h"
 #include "GridS2DS.h"
@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
 
         }
 
-        Manual manual("\t * Build 0.3.07.01 (alpha).                 *");
+        Manual manual("\t * Build 0.3.07.02 (alpha).                 *");
 
         double CovarianceMin, CovarianceMax, CovarianceStep=0.01;
         double InitialTimeMin=0.5, InitialTimeMax, InitialTimeStep;
@@ -1660,6 +1660,12 @@ int main(int argc, char* argv[])
                                     for(unsigned int i=0; i<dim; i++)
                                         M[dim*i+1]/=datal;
 
+                                    /// **** AP: 2025-06-23 fixed normalization for second spindown:
+                                    unsigned int datal2 = datal*datal;
+                                    for(unsigned int i=0; i<dim; i++)
+                                        M[dim*i+2]/=datal2;
+                                    /// **** End of fixed normalization for second spindown.
+
                                     cout << "Normalized grid matrix:" << endl;
                                     for(unsigned int i = 0; i<M.size(); i++){
                                         cout << scientific << M[i];
@@ -2401,6 +2407,12 @@ int main(int argc, char* argv[])
                                 // M[13] = M[13]/datal;
                                 for(unsigned int i=0; i<dim; i++)
                                     M[dim*i+1]/=datal;
+
+                                /// **** AP: 2025-06-23 fixed normalization for second spindown:
+                                unsigned int datal2 = datal*datal;
+                                for(unsigned int i=0; i<dim; i++)
+                                    M[dim*i+2]/=datal2;
+                                /// **** End of fixed normalization for second spindown.
 
                                 cout << "Normalized grid matrix:" << endl;
                                 for(unsigned int i = 0; i<M.size(); i++){
