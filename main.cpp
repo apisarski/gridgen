@@ -4,7 +4,7 @@
 // Copyright:   Andrzej Pisarski
 // License:     CC-BY-NC-ND
 // Created:     13/10/2015
-// Modification:23/06/2025 A.Pisarski
+// Modification:31/07/2025 A.Pisarski
 ///////////////////////////////////////
 
 #include "ReadConfig.h"
@@ -31,7 +31,7 @@
 #include "FisherRM.h"
 #include "ReadData.h"
 #include "ReadEphemeris.h"
-/// Directed searches: (from line 1856)
+/// Directed searches: (from line 1858)
 #include "DensityS1DS.h"
 #include "GridS1DS.h"
 #include "GridS2DS.h"
@@ -1661,9 +1661,12 @@ int main(int argc, char* argv[])
                                         M[dim*i+1]/=datal;
 
                                     /// **** AP: 2025-06-23 fixed normalization for second spindown:
-                                    unsigned int datal2 = datal*datal;
-                                    for(unsigned int i=0; i<dim; i++)
-                                        M[dim*i+2]/=datal2;
+                                    /// **** AP: 2025-07-31 fixed normalization in case of very long data length
+                                    /// unsigned int datal2 = datal*datal; - this approach is not working for large data length
+                                    for(unsigned int i=0; i<dim; i++){
+                                        M[dim*i+2]/=datal;
+                                        M[dim*i+2]/=datal;
+                                    }
                                     /// **** End of fixed normalization for second spindown.
 
                                     cout << "Normalized grid matrix:" << endl;
@@ -2409,9 +2412,12 @@ int main(int argc, char* argv[])
                                     M[dim*i+1]/=datal;
 
                                 /// **** AP: 2025-06-23 fixed normalization for second spindown:
-                                unsigned int datal2 = datal*datal;
-                                for(unsigned int i=0; i<dim; i++)
-                                    M[dim*i+2]/=datal2;
+                                /// **** AP: 2025-07-31 fixed normalization in case of very long data length
+                                /// unsigned int datal2 = datal*datal; - this approach is not working for large data length
+                                for(unsigned int i=0; i<dim; i++){
+                                    M[dim*i+2]/=datal;
+                                    M[dim*i+2]/=datal;
+                                }
                                 /// **** End of fixed normalization for second spindown.
 
                                 cout << "Normalized grid matrix:" << endl;
